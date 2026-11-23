@@ -159,7 +159,7 @@
   /* apoio visual: faixa compacta sob o texto, nunca à frente dele */
   .vis{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding-top:16px;border-top:1px dashed var(--line)}
   .vis .tag{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:.8rem;line-height:1.3;color:var(--ink);background:var(--bg)}
-  .vis .tag.ok::before{content:"✓";color:var(--accent);font-weight:700}
+  .vis .tag.yes::before{content:"✓";color:var(--accent);font-weight:700}
   .vis .tag.pend{color:var(--muted);border-style:dashed}
   .vis .tag.pend::before{content:"…";color:var(--muted)}
   .vis .arr{color:var(--accent);font-size:.9rem}
@@ -175,15 +175,9 @@
   .faqbox:not(.js) .faq-panels{display:flex;flex-direction:column;gap:28px}
   .faqbox:not(.js) .faq-panel{visibility:visible}
   .faqbox:not(.js) .faq-panel h3{display:block;font-size:1.3rem}
+  .faq-pager{display:none}
   @media(max-width:760px){
     #faq{padding:28px 0 20px}
-    .faq-panels{grid-template-rows:minmax(0,1fr)}
-    .faq-panel{overflow-y:auto}
-    .vis{margin-top:auto}
-    .vis{gap:10px}
-    .vis .vr{grid-template-columns:minmax(0,1fr);gap:5px}
-    .vis .lbl{font-size:.66rem;letter-spacing:.1em;line-height:1}
-    .vis .st{gap:5px}
     #faq h2{margin:6px 0 0;font-size:1.75rem}
     #faq .sub{display:none}
     .faqbox{grid-template-columns:minmax(0,1fr);gap:10px;margin-top:16px}
@@ -193,13 +187,36 @@
     .faq-tab[aria-selected=true]{background:var(--ink);color:var(--bg);border-color:var(--ink);box-shadow:none}
     .faq-tab .full{display:none}
     .faq-tab .short{display:inline}
-    .faq-panels{padding:18px 18px 16px;border-radius:20px}
-    .faq-panel{gap:14px}
-    .faq-panel:not(.on){display:none}
-    .faq-panel h3{display:block;font-size:1.25rem;line-height:1.2}
-    .faq-panel p{font-size:.97rem;line-height:1.55}
-    .vis{padding-top:12px;gap:6px}
+    /* cartão de altura fixa; fonte única; as respostas que couberem aparecem juntas */
+    .faq-panels{display:flex;flex-direction:column;gap:16px;padding:18px 18px 14px;border-radius:20px;overflow:hidden}
+    .faq-panel{display:none;visibility:visible;gap:12px;padding-bottom:16px;border-bottom:1px dashed var(--line)}
+    .faq-panel.pg{display:flex}
+    .faq-panel.last{border-bottom:0;padding-bottom:0}
+    /* sobra de altura: atalhos para as outras perguntas, quantos couberem */
+    .faq-more{display:flex;flex-direction:column;gap:6px;margin-top:auto;padding-top:12px;border-top:1px solid var(--line)}
+    .faq-more[hidden]{display:none}
+    .faq-more small{font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;line-height:1;margin-bottom:2px}
+    .faq-more button{display:flex;justify-content:space-between;align-items:center;gap:10px;height:40px;text-align:left;font:inherit;font-size:.92rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:0 14px;cursor:pointer}
+    .faq-more button span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .faq-more button::after{content:"›";color:var(--accent);font-size:1.1rem;flex:none}
+    .faq-more button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+    .multi .faq-panel.on h3{color:var(--accent)}
+    .faq-panel h3{display:block;font-size:1.2rem;line-height:1.2}
+    .faq-panel p{font-size:1rem;line-height:1.55}
+    .vis{padding-top:12px;gap:10px;align-content:flex-start}
+    .vis .vr{grid-template-columns:minmax(0,1fr);gap:5px}
+    .vis .lbl{font-size:.66rem;letter-spacing:.1em;line-height:1}
+    .vis .st{gap:5px}
     .vis .tag{padding:0 8px;font-size:.76rem;gap:4px;height:24px}
+    .paged .faq-pager{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--line)}
+    .faq-more[hidden]+.faq-pager{margin-top:auto}
+    .faq-panels{overflow-y:auto}
+    .faq-pager{position:sticky;bottom:-14px;background:var(--card)}
+    @media(max-height:680px){#faq{padding-top:18px}#faq .eyebrow{display:none}#faq h2{font-size:1.4rem}}
+    .faq-pager button{width:42px;height:34px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--ink);font:inherit;font-size:1.2rem;line-height:1;cursor:pointer}
+    .faq-pager button:disabled{opacity:.3;cursor:default}
+    .faq-pager button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+    .faq-pager span{font-size:.82rem;color:var(--muted)}
   }
   .final{text-align:center;background:var(--dark);color:var(--dark-ink);border-radius:32px;padding:80px 24px}
   .final h2{margin:12px auto 14px}
@@ -367,12 +384,12 @@
         <div class="faq-panel" role="tabpanel" id="p-1" aria-labelledby="t-1">
           <h3>O Alinhavo já está pronto para usar?</h3>
           <p>Ainda não. A página traz uma demonstração em 2D, com um modelo ilustrado, e a planta técnica inicial. O escaneamento do corpo, o provador 3D e a análise de caimento estão em desenvolvimento.</p>
-          <div class="vis"><div class="vr"><span class="lbl">Hoje</span><div class="vt"><span class="tag ok">Demonstração 2D</span><span class="tag ok">Planta técnica</span></div></div><div class="vr"><span class="lbl">Em breve</span><div class="vt"><span class="tag pend">Escaneamento</span><span class="tag pend">Provador 3D</span></div></div></div>
+          <div class="vis"><div class="vr"><span class="lbl">Hoje</span><div class="vt"><span class="tag yes">Demonstração 2D</span><span class="tag yes">Planta técnica</span></div></div><div class="vr"><span class="lbl">Em breve</span><div class="vt"><span class="tag pend">Escaneamento</span><span class="tag pend">Provador 3D</span></div></div></div>
         </div>
         <div class="faq-panel" role="tabpanel" id="p-2" aria-labelledby="t-2">
           <h3>Preciso de fita métrica?</h3>
           <p>Por enquanto, sim: você digita as medidas manualmente (peito, cintura e comprimento do paletó, na demonstração). O escaneamento pela câmera do celular está a caminho.</p>
-          <div class="vis"><div class="vr"><span class="lbl">Hoje</span><div class="vt"><span class="tag ok">Peito</span><span class="tag ok">Cintura</span><span class="tag ok">Paletó</span></div></div><div class="vr"><span class="lbl">Em breve</span><div class="vt"><span class="tag pend">Escaneamento</span></div></div></div>
+          <div class="vis"><div class="vr"><span class="lbl">Hoje</span><div class="vt"><span class="tag yes">Peito</span><span class="tag yes">Cintura</span><span class="tag yes">Paletó</span></div></div><div class="vr"><span class="lbl">Em breve</span><div class="vt"><span class="tag pend">Escaneamento</span></div></div></div>
         </div>
         <div class="faq-panel" role="tabpanel" id="p-3" aria-labelledby="t-3">
           <h3>Os moldes já podem ir direto para o corte?</h3>
@@ -382,23 +399,25 @@
         <div class="faq-panel" role="tabpanel" id="p-4" aria-labelledby="t-4">
           <h3>Quais arquivos posso exportar?</h3>
           <p>A planta técnica em PDF (folha A3), os moldes em DXF na escala 1:1, o desenho em SVG e os dados em JSON. Eles ficam na seção <a href="#projeto">Planta técnica</a>.</p>
-          <div class="vis"><span class="tag ok">PDF · A3</span><span class="tag ok">DXF · 1:1</span><span class="tag ok">SVG</span><span class="tag ok">JSON</span></div>
+          <div class="vis"><span class="tag yes">PDF · A3</span><span class="tag yes">DXF · 1:1</span><span class="tag yes">SVG</span><span class="tag yes">JSON</span></div>
         </div>
         <div class="faq-panel" role="tabpanel" id="p-5" aria-labelledby="t-5">
           <h3>Posso comprar a peça pelo Alinhavo?</h3>
           <p>Ainda não. A ideia é conectar você a fornecedores, para pedir a peça pronta, com ajuste ou produzida do zero, mas esse recurso não está disponível. Hoje você leva o projeto ao alfaiate ou à fábrica de sua confiança.</p>
-          <div class="vis"><div class="vr"><span class="lbl">Hoje</span><div class="vt"><span class="st"><span class="tag ok">Projeto</span><span class="arr">→</span></span><span class="tag ok">Seu alfaiate</span></div></div><div class="vr"><span class="lbl">Em breve</span><div class="vt"><span class="tag pend">Fornecedores</span></div></div></div>
+          <div class="vis"><div class="vr"><span class="lbl">Hoje</span><div class="vt"><span class="st"><span class="tag yes">Projeto</span><span class="arr">→</span></span><span class="tag yes">Seu alfaiate</span></div></div><div class="vr"><span class="lbl">Em breve</span><div class="vt"><span class="tag pend">Fornecedores</span></div></div></div>
         </div>
         <div class="faq-panel" role="tabpanel" id="p-6" aria-labelledby="t-6">
           <h3>Sou designer ou fornecedor. Serve para mim?</h3>
           <p>Esse é o objetivo: testar a mesma peça em vários corpos e, depois, publicar um catálogo. A grade de tamanhos com vários corpos está em desenvolvimento; hoje você já pode exportar planta e moldes para a produção.</p>
-          <div class="vis"><div class="vr"><span class="lbl">Hoje</span><div class="vt"><span class="tag ok">Planta e moldes</span></div></div><div class="vr"><span class="lbl">Em breve</span><div class="vt"><span class="tag pend">Vários corpos</span><span class="tag pend">Catálogo</span></div></div></div>
+          <div class="vis"><div class="vr"><span class="lbl">Hoje</span><div class="vt"><span class="tag yes">Planta e moldes</span></div></div><div class="vr"><span class="lbl">Em breve</span><div class="vt"><span class="tag pend">Vários corpos</span><span class="tag pend">Catálogo</span></div></div></div>
         </div>
         <div class="faq-panel" role="tabpanel" id="p-7" aria-labelledby="t-7">
           <h3>Como entro na lista de acesso antecipado?</h3>
           <p>Deixe seu e-mail no formulário no fim desta página e entre na lista. Estamos abrindo vagas para pessoas e designers que querem testar o Alinhavo antes do lançamento.</p>
           <div class="vis"><a class="btn" href="#acesso" style="padding:9px 20px;font-size:.9rem">Ir para o formulário</a></div>
         </div>
+        <div class="faq-more" id="faq-more" hidden></div>
+        <div class="faq-pager"><button type="button" id="fp-prev" aria-label="Respostas anteriores">‹</button><span id="fp-n" aria-live="polite"></span><button type="button" id="fp-next" aria-label="Próximas respostas">›</button></div>
       </div>
     </div>
   </div>
@@ -936,45 +955,95 @@
 (function(){
   var box=document.getElementById('faqbox'); if(!box) return;
   var tabs=[].slice.call(box.querySelectorAll('.faq-tab')), panels=[].slice.call(box.querySelectorAll('.faq-panel'));
-  function show(i,focus){
+  var pn=box.querySelector('.faq-panels'), sec=document.getElementById('faq');
+  var prev=document.getElementById('fp-prev'), next=document.getElementById('fp-next'), num=document.getElementById('fp-n');
+  var mq=window.matchMedia('(max-width:760px)'), sel=0, page=0, pages=[[0]], pageOf=[], key='';
+  var GAP=16, PAGER=66, MINH=300, hs=[], availG=0, moreEl=document.getElementById('faq-more');
+  var probe=document.createElement('div');probe.style.cssText='position:fixed;left:0;top:0;width:0;height:100svh;visibility:hidden;pointer-events:none';document.body.appendChild(probe);
+
+  function center(i){
+    var bar=tabs[i].parentNode;
+    if(getComputedStyle(bar).flexDirection==='row'){var x=tabs[i].getBoundingClientRect(),b=bar.getBoundingClientRect();bar.scrollBy({left:(x.left+x.width/2)-(b.left+b.width/2),behavior:'auto'})}
+  }
+  function draw(){
+    panels.forEach(function(p,k){p.classList.toggle('pg',pageOf[k]===page);p.classList.remove('last')});
+    var cur=pages[page]||[];
+    if(cur.length)panels[cur[cur.length-1]].classList.add('last');
+    num.textContent=(page+1)+' / '+pages.length;
+    prev.disabled=page<=0; next.disabled=page>=pages.length-1;
+    box.classList.toggle('multi',cur.length>1);
+    /* espaço que sobra na tela vira atalhos para as perguntas que não estão nela */
+    var used=0;cur.forEach(function(i,n){used+=hs[i]+(n?GAP:0)});
+    var room=availG-used-GAP, n=Math.min(panels.length-cur.length,Math.floor((room-26)/46)), more=[], compact=false;
+    if(n<1&&room>=54){n=1;compact=true}
+    for(var s=1;s<=panels.length&&more.length<n;s++){var q=((cur[cur.length-1]||0)+s)%panels.length;if(pageOf[q]!==page)more.push(q)}
+    moreEl.innerHTML='';
+    if(n>0&&more.length&&mq.matches){
+      if(!compact){var lab=document.createElement('small');lab.textContent='Outras perguntas';moreEl.appendChild(lab)}
+      more.forEach(function(q){var b=document.createElement('button'),sp=document.createElement('span');b.type='button';sp.textContent=tabs[q].querySelector('.full').textContent;b.appendChild(sp);b.addEventListener('click',function(){select(q,false)});moreEl.appendChild(b)});
+      moreEl.hidden=false;
+    }else moreEl.hidden=true;
+  }
+  function select(i,focus){
+    sel=i;
     tabs.forEach(function(t,k){var on=k===i;t.setAttribute('aria-selected',on);t.tabIndex=on?0:-1;panels[k].classList.toggle('on',on)});
-    if(focus){tabs[i].focus();}
-    var t=tabs[i],bar=t.parentNode;
-    if(getComputedStyle(bar).flexDirection==='row'){var x=t.getBoundingClientRect(),b=bar.getBoundingClientRect();bar.scrollBy({left:(x.left+x.width/2)-(b.left+b.width/2),behavior:'auto'})}
+    if(mq.matches){page=pageOf[i]||0;draw()}
+    if(focus)tabs[i].focus();
+    center(i);
+  }
+  /* celular: tamanho de fonte fixo; quantas perguntas cabem por tela depende da altura disponível */
+  function layout(force){
+    var k=[mq.matches,window.innerWidth,probe.offsetHeight||window.innerHeight].join();
+    if(!force&&k===key)return; key=k;
+    if(!mq.matches){
+      pn.style.height='';box.classList.remove('paged','multi');
+      panels.forEach(function(p){p.classList.remove('pg','last')});
+      return;
+    }
+    var vh=probe.offsetHeight||window.innerHeight;
+    var top=pn.getBoundingClientRect().top-sec.getBoundingClientRect().top;
+    var cs=getComputedStyle(pn),pad=parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom)+parseFloat(cs.borderTopWidth)*2;
+    var H=Math.max(MINH,vh-top-20), avail=H-pad;
+    box.classList.remove('paged');pn.style.height='auto';
+    panels.forEach(function(p){p.classList.add('pg');p.classList.remove('last')});
+    hs=panels.map(function(p){return p.getBoundingClientRect().height});
+    /* divide as perguntas, em ordem, em telas que caibam em 'a', minimizando o espaço sobrando */
+    function pack(a){
+      var n=hs.length,cost=[0],from=[0],i,j,h,c;
+      for(i=1;i<=n;i++){
+        cost[i]=Infinity;
+        for(j=i-1;j>=0;j--){
+          h=0;for(var q=j;q<i;q++)h+=hs[q]+(q>j?GAP:0);
+          if(h>a&&i-j>1)break;
+          c=cost[j]+(h>a?0:(a-h)*(a-h));
+          if(c<cost[i]){cost[i]=c;from[i]=j}
+        }
+      }
+      var pg=[];for(i=n;i>0;i=from[i])pg.unshift(range(from[i],i));return pg;
+    }
+    function range(a,b){var r=[];for(var k=a;k<b;k++)r.push(k);return r}
+    pages=pack(avail);
+    if(pages.length>1)pages=pack(avail-PAGER);
+    pages.forEach(function(pg,n){pg.forEach(function(i){pageOf[i]=n})});
+    availG=pages.length>1?avail-PAGER:avail;
+    box.classList.toggle('paged',pages.length>1);
+    pn.style.height=H+'px';
+    page=pageOf[sel]||0;draw();
   }
   tabs.forEach(function(t,i){
-    t.addEventListener('click',function(){show(i,false)});
+    t.addEventListener('click',function(){select(i,false)});
     t.addEventListener('keydown',function(e){
       var n=tabs.length,k=e.key,j=-1;
       if(k==='ArrowDown'||k==='ArrowRight')j=(i+1)%n; else if(k==='ArrowUp'||k==='ArrowLeft')j=(i-1+n)%n; else if(k==='Home')j=0; else if(k==='End')j=n-1;
-      if(j>=0){e.preventDefault();show(j,true)}
+      if(j>=0){e.preventDefault();select(j,true)}
     });
   });
-  /* celular: o cartão ocupa a altura da tela e o texto cresce até preencher */
-  var mq=window.matchMedia('(max-width:760px)'),pn=box.querySelector('.faq-panels'),sec=document.getElementById('faq');
-  var probe=document.createElement('div');probe.style.cssText='position:fixed;left:0;top:0;width:0;height:100svh;visibility:hidden;pointer-events:none';document.body.appendChild(probe);
-  function fit(){
-    var txt=panels.map(function(p){return p.querySelector('p')});
-    if(!mq.matches){pn.style.height='';panels.forEach(function(pl,k){txt[k].style.fontSize='';txt[k].style.lineHeight='';pl.querySelector('h3').style.fontSize=''});return}
-    var vh=probe.offsetHeight||window.innerHeight,top=pn.getBoundingClientRect().top-sec.getBoundingClientRect().top;
-    pn.style.height=Math.max(300,vh-top-20)+'px';
-    panels.forEach(function(pl,k){
-      var p=txt[k];
-      if(!pl.classList.contains('on'))return;
-      var h3=pl.querySelector('h3');
-      var s=30,lh=1.55,g=0;
-      function ap(){p.style.fontSize=s+'px';h3.style.fontSize=Math.max(20,s*1.2)+'px';p.style.lineHeight=lh}
-      function ov(){return pl.scrollHeight>pl.clientHeight+1}
-      for(;s>15;s-=.5){ap();if(!ov())break}
-      /* sobra de altura vira respiro entre as linhas (até certo ponto) */
-      for(lh=1.6;lh<=2.05;lh+=.05){ap();if(ov()){lh-=.05;ap();break}}
-      while(ov()&&g++<80){if(lh>1.55)lh-=.05;else if(s>15)s-=.5;else break;ap()}
-    });
-  }
-  var _show=show;show=function(i,f){_show(i,f);fit()};
-  window.addEventListener('resize',fit);window.addEventListener('orientationchange',fit);
-  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);
-  box.classList.add('js'); show(0,false);
+  prev.addEventListener('click',function(){if(page>0)select(pages[page-1][0],false)});
+  next.addEventListener('click',function(){if(page<pages.length-1)select(pages[page+1][0],false)});
+  function relayout(){layout(false);select(sel,false)}
+  window.addEventListener('resize',relayout);window.addEventListener('orientationchange',function(){layout(true);select(sel,false)});
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){layout(true);select(sel,false)});
+  box.classList.add('js'); layout(true); select(0,false);
 })();
 </script>
 </body>
