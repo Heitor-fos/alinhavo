@@ -141,6 +141,53 @@
   .ex:hover{border-color:var(--accent)}
   @media(max-width:860px){.exports{grid-template-columns:1fr 1fr}}
   @media(max-width:480px){.exports{grid-template-columns:1fr}}
+  /* FAQ: lista de perguntas ao lado do painel de resposta (sem sanfona, nada é empurrado) */
+  #faq .sub{margin-bottom:0}
+  .faqbox{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:24px;margin-top:36px;align-items:stretch}
+  .faq-tabs{display:flex;flex-direction:column;gap:6px}
+  .faq-tab{display:block;width:100%;text-align:left;font:inherit;font-size:.98rem;line-height:1.35;color:var(--ink);background:transparent;border:1px solid transparent;border-radius:14px;padding:13px 16px;cursor:pointer}
+  .faq-tab:hover{background:var(--bg2)}
+  .faq-tab[aria-selected=true]{background:var(--card);border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent);font-weight:600}
+  .faq-tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .faq-tab .short{display:none}
+  .faq-panels{display:grid;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:28px 32px}
+  .faq-panel{grid-area:1/1;visibility:hidden;display:flex;flex-direction:column;gap:20px;min-width:0}
+  .faq-panel.on{visibility:visible}
+  .faq-panel h3{display:none}
+  .faq-panel p{color:var(--ink);font-size:1.05rem;line-height:1.65;max-width:38em}
+  .faq-panel p a{color:var(--accent)}
+  /* apoio visual: faixa compacta sob o texto, nunca à frente dele */
+  .vis{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding-top:16px;border-top:1px dashed var(--line)}
+  .vis .tag{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:.8rem;line-height:1.3;color:var(--ink);background:var(--bg)}
+  .vis .tag.ok::before{content:"✓";color:var(--accent);font-weight:700}
+  .vis .tag.pend{color:var(--muted);border-style:dashed}
+  .vis .tag.pend::before{content:"…";color:var(--muted)}
+  .vis .arr{color:var(--accent);font-size:.9rem}
+  .vis .lbl{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-right:2px}
+  /* sem JS: todas as respostas ficam visíveis em sequência */
+  .faqbox:not(.js) .faq-tabs{display:none}
+  .faqbox:not(.js) .faq-panels{display:flex;flex-direction:column;gap:28px}
+  .faqbox:not(.js) .faq-panel{visibility:visible}
+  .faqbox:not(.js) .faq-panel h3{display:block;font-size:1.3rem}
+  @media(max-width:760px){
+    #faq{padding:40px 0 48px}
+    #faq h2{margin:6px 0 0;font-size:1.75rem}
+    #faq .sub{display:none}
+    .faqbox{grid-template-columns:minmax(0,1fr);gap:10px;margin-top:16px}
+    .faq-tabs{flex-direction:row;overflow-x:auto;gap:8px;padding:2px 20px 6px;margin:0 -20px;scroll-snap-type:x proximity;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 28px),transparent)}
+    .faq-tabs::-webkit-scrollbar{display:none}
+    .faq-tab{width:auto;flex:none;white-space:nowrap;scroll-snap-align:start;border:1px solid var(--line);border-radius:999px;padding:9px 15px;font-size:.88rem}
+    .faq-tab[aria-selected=true]{background:var(--ink);color:var(--bg);border-color:var(--ink);box-shadow:none}
+    .faq-tab .full{display:none}
+    .faq-tab .short{display:inline}
+    .faq-panels{padding:18px 18px 16px;border-radius:20px}
+    .faq-panel{gap:14px}
+    .faq-panel:not(.on){display:none}
+    .faq-panel h3{display:block;font-size:1.25rem;line-height:1.2}
+    .faq-panel p{font-size:.97rem;line-height:1.55}
+    .vis{padding-top:12px;gap:6px}
+    .vis .tag{padding:3px 10px;font-size:.76rem}
+  }
   .final{text-align:center;background:var(--dark);color:var(--dark-ink);border-radius:32px;padding:80px 24px}
   .final h2{margin:12px auto 14px}
   .final .sub{margin:0 auto 32px;color:#c9c0b3}
@@ -162,6 +209,7 @@
       <li><a href="#para-quem">Para quem</a></li>
       <li><a href="#recursos">Recursos</a></li>
       <li><a href="#projeto">Planta técnica</a></li>
+      <li><a href="#faq">Perguntas</a></li>
     </ul>
     <a class="btn ghost" href="#acesso" style="padding:10px 20px">Acesso antecipado</a>
   </nav>
@@ -287,7 +335,63 @@
   </div>
 </section>
 
-<div class="wrap" id="acesso" style="padding:88px 20px 40px">
+<section id="faq">
+  <div class="wrap">
+    <span class="eyebrow">Perguntas frequentes</span>
+    <h2>O que você talvez queira saber.</h2>
+    <p class="sub">Escolha uma pergunta e a resposta aparece ao lado, sem mover o resto da página.</p>
+    <div class="faqbox" id="faqbox">
+      <div class="faq-tabs" role="tablist" aria-label="Perguntas frequentes" aria-orientation="vertical">
+        <button class="faq-tab" role="tab" id="t-1" aria-controls="p-1" type="button"><span class="full">O Alinhavo já está pronto para usar?</span><span class="short">Está pronto?</span></button>
+        <button class="faq-tab" role="tab" id="t-2" aria-controls="p-2" type="button"><span class="full">Preciso de fita métrica?</span><span class="short">Fita métrica?</span></button>
+        <button class="faq-tab" role="tab" id="t-3" aria-controls="p-3" type="button"><span class="full">Os moldes já podem ir direto para o corte?</span><span class="short">Moldes</span></button>
+        <button class="faq-tab" role="tab" id="t-4" aria-controls="p-4" type="button"><span class="full">Quais arquivos posso exportar?</span><span class="short">Arquivos</span></button>
+        <button class="faq-tab" role="tab" id="t-5" aria-controls="p-5" type="button"><span class="full">Posso comprar a peça pelo Alinhavo?</span><span class="short">Comprar</span></button>
+        <button class="faq-tab" role="tab" id="t-6" aria-controls="p-6" type="button"><span class="full">Sou designer ou fornecedor. Serve para mim?</span><span class="short">Designers</span></button>
+        <button class="faq-tab" role="tab" id="t-7" aria-controls="p-7" type="button"><span class="full">Como entro na lista de acesso antecipado?</span><span class="short">Acesso antecipado</span></button>
+      </div>
+      <div class="faq-panels">
+        <div class="faq-panel" role="tabpanel" id="p-1" aria-labelledby="t-1">
+          <h3>O Alinhavo já está pronto para usar?</h3>
+          <p>Ainda não. A página traz uma demonstração em 2D, com um modelo ilustrado, e a planta técnica inicial. O escaneamento do corpo, o provador 3D e a análise de caimento estão em desenvolvimento.</p>
+          <div class="vis"><span class="tag ok">Demonstração 2D</span><span class="tag ok">Planta técnica</span><span class="tag pend">Escaneamento</span><span class="tag pend">Provador 3D</span></div>
+        </div>
+        <div class="faq-panel" role="tabpanel" id="p-2" aria-labelledby="t-2">
+          <h3>Preciso de fita métrica?</h3>
+          <p>Por enquanto, sim: você digita as medidas manualmente (peito, cintura e comprimento do paletó, na demonstração). O escaneamento pela câmera do celular está a caminho.</p>
+          <div class="vis"><span class="lbl">Medidas</span><span class="tag ok">Peito</span><span class="tag ok">Cintura</span><span class="tag ok">Paletó</span><span class="tag pend">Escaneamento</span></div>
+        </div>
+        <div class="faq-panel" role="tabpanel" id="p-3" aria-labelledby="t-3">
+          <h3>Os moldes já podem ir direto para o corte?</h3>
+          <p>Não. São um rascunho paramétrico calculado das suas medidas, e um modelista deve conferi-los antes do corte. O DXF também ainda não foi validado em programas como Gerber, Lectra ou Optitex.</p>
+          <div class="vis"><span class="tag">Suas medidas</span><span class="arr">→</span><span class="tag">Molde (rascunho)</span><span class="arr">→</span><span class="tag">Modelista confere</span><span class="arr">→</span><span class="tag">Corte</span></div>
+        </div>
+        <div class="faq-panel" role="tabpanel" id="p-4" aria-labelledby="t-4">
+          <h3>Quais arquivos posso exportar?</h3>
+          <p>A planta técnica em PDF (folha A3), os moldes em DXF na escala 1:1, o desenho em SVG e os dados em JSON. Eles ficam na seção <a href="#projeto">Planta técnica</a>.</p>
+          <div class="vis"><span class="tag ok">PDF · A3</span><span class="tag ok">DXF · 1:1</span><span class="tag ok">SVG</span><span class="tag ok">JSON</span></div>
+        </div>
+        <div class="faq-panel" role="tabpanel" id="p-5" aria-labelledby="t-5">
+          <h3>Posso comprar a peça pelo Alinhavo?</h3>
+          <p>Ainda não. A ideia é conectar você a fornecedores, para pedir a peça pronta, com ajuste ou produzida do zero, mas esse recurso não está disponível. Hoje você leva o projeto ao alfaiate ou à fábrica de sua confiança.</p>
+          <div class="vis"><span class="lbl">Hoje</span><span class="tag ok">Projeto</span><span class="arr">→</span><span class="tag ok">Seu alfaiate</span><span class="lbl">Em breve</span><span class="tag pend">Fornecedores</span></div>
+        </div>
+        <div class="faq-panel" role="tabpanel" id="p-6" aria-labelledby="t-6">
+          <h3>Sou designer ou fornecedor. Serve para mim?</h3>
+          <p>Esse é o objetivo: testar a mesma peça em vários corpos e, depois, publicar um catálogo. A grade de tamanhos com vários corpos está em desenvolvimento; hoje você já pode exportar planta e moldes para a produção.</p>
+          <div class="vis"><span class="lbl">Hoje</span><span class="tag ok">Planta e moldes</span><span class="lbl">Em breve</span><span class="tag pend">Vários corpos</span><span class="tag pend">Catálogo</span></div>
+        </div>
+        <div class="faq-panel" role="tabpanel" id="p-7" aria-labelledby="t-7">
+          <h3>Como entro na lista de acesso antecipado?</h3>
+          <p>Deixe seu e-mail no formulário no fim desta página e entre na lista. Estamos abrindo vagas para pessoas e designers que querem testar o Alinhavo antes do lançamento.</p>
+          <div class="vis"><a class="btn" href="#acesso" style="padding:9px 20px;font-size:.9rem">Ir para o formulário</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap" id="acesso"style="padding:88px 20px 40px">
   <div class="final">
     <span class="eyebrow">Acesso antecipado</span>
     <h2>Seja o primeiro a vestir o projeto.</h2>
@@ -813,6 +917,27 @@
   setRanges(true); render();
 
   $('f').addEventListener('submit',function(e){e.preventDefault();$('ok').textContent='Obrigado! Avisaremos você assim que abrirmos novas vagas.';e.target.reset();});
+})();
+</script>
+<script>
+(function(){
+  var box=document.getElementById('faqbox'); if(!box) return;
+  var tabs=[].slice.call(box.querySelectorAll('.faq-tab')), panels=[].slice.call(box.querySelectorAll('.faq-panel'));
+  function show(i,focus){
+    tabs.forEach(function(t,k){var on=k===i;t.setAttribute('aria-selected',on);t.tabIndex=on?0:-1;panels[k].classList.toggle('on',on)});
+    if(focus){tabs[i].focus();}
+    var t=tabs[i],bar=t.parentNode;
+    if(getComputedStyle(bar).flexDirection==='row'){var x=t.getBoundingClientRect(),b=bar.getBoundingClientRect();bar.scrollBy({left:(x.left+x.width/2)-(b.left+b.width/2),behavior:'auto'})}
+  }
+  tabs.forEach(function(t,i){
+    t.addEventListener('click',function(){show(i,false)});
+    t.addEventListener('keydown',function(e){
+      var n=tabs.length,k=e.key,j=-1;
+      if(k==='ArrowDown'||k==='ArrowRight')j=(i+1)%n; else if(k==='ArrowUp'||k==='ArrowLeft')j=(i-1+n)%n; else if(k==='Home')j=0; else if(k==='End')j=n-1;
+      if(j>=0){e.preventDefault();show(j,true)}
+    });
+  });
+  box.classList.add('js'); show(0,false);
 })();
 </script>
 </body>
