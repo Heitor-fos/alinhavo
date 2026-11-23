@@ -88,15 +88,42 @@
   .path .tag{display:inline-block;margin-top:12px;font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
   .path .tag.on{border-color:var(--accent);color:var(--accent)}
   @media(max-width:1000px){.path{grid-template-columns:1fr 1fr}}
-  @media(max-width:640px){
-    .path{grid-template-columns:1fr;gap:0;margin-top:32px}
-    .path li{background:none;border:0;border-radius:0;padding:0 0 28px 56px}
-    .path li:last-child{padding-bottom:0}
-    .path li::before{content:"";position:absolute;left:19px;top:44px;bottom:4px;border-left:2px dashed var(--line)}
-    .path li:last-child::before{display:none}
-    .path .n{position:absolute;left:0;top:0;width:40px;height:40px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:1.15rem;display:grid;place-items:center}
-    .path h3{margin:0 0 6px;font-size:1.2rem;padding-top:6px}
-    .path p{font-size:.97rem}
+  .path a.tag{text-decoration:underline;text-underline-offset:3px}
+  .path a.tag:hover{background:var(--accent);color:var(--accent-ink)}
+  .path a.tag:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  /* em obras: escaneamento */
+  .wip{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:40px}
+  .wip article{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px}
+  .wip h3{font-size:1.3rem;margin-bottom:10px}
+  .wip p{color:var(--muted);font-size:.97rem}
+  /* celular: #como e #em-obras ocupam ~90% da altura da tela; fonte fixa, o que sobra de altura vai para a imagem/cartões */
+  @media(max-width:760px){
+    #como,#em-obras{min-height:90svh;display:flex;flex-direction:column;padding:24px 0 20px}
+    #como>.wrap,#em-obras>.wrap{flex:1;display:flex;flex-direction:column;width:100%;min-height:0}
+    #como h2,#em-obras h2{margin:6px 0 8px;font-size:1.75rem}
+    #como .sub,#em-obras .sub{font-size:1rem;line-height:1.5;margin-bottom:14px}
+    #como .banner,#em-obras .banner{flex:1 1 0;min-height:0;height:auto;aspect-ratio:auto;margin:0 0 14px;border-radius:18px}
+    .path{display:flex;gap:12px;margin:0 -20px;padding:0 20px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-left:20px;scrollbar-width:none}
+    .path::-webkit-scrollbar{display:none}
+    .path li{flex:0 0 88%;scroll-snap-align:start;padding:16px 18px;display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto 1fr auto;column-gap:10px;align-items:center}
+    .path li:last-child{margin-right:20px}
+    .path .n{font-size:1.9rem}
+    .path h3{font-size:1.2rem;margin:0}
+    .path p{grid-column:1/-1;font-size:1rem;line-height:1.55;align-self:start;margin-top:8px}
+    .path .tag{grid-column:1/-1;justify-self:start;margin-top:10px;font-size:.72rem;padding:6px 12px}
+    .wip{display:flex;gap:12px;margin:0 -20px;padding:0 20px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-left:20px;scrollbar-width:none}
+    .wip::-webkit-scrollbar{display:none}
+    .wip article{flex:0 0 88%;scroll-snap-align:start;padding:16px 18px;border-radius:20px}
+    .wip article:last-child{margin-right:20px}
+    .wip h3{font-size:1.2rem;margin-bottom:8px}
+    .wip p{font-size:1rem;line-height:1.55}
+  }
+  @media(max-width:760px) and (max-height:620px){
+    #como,#em-obras{padding:12px 0 10px}
+    #como .sub,#em-obras .sub{margin-bottom:10px}
+    .path li,.wip article{padding:12px 16px}
+    .path p{margin-top:6px}
+    .path .tag{margin-top:8px}
   }
 
   .two{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:48px}
@@ -310,9 +337,9 @@
     <img class="banner" src="imagens/alfaiate-medindo.jpg" alt="Alfaiate tirando as medidas dos ombros de um cliente, ao lado de um manequim com terno trespassado" loading="lazy">
     <ol class="path">
       <li><div class="n">1</div><h3>Escaneie o corpo</h3><p>Em poucos segundos, a câmera do celular lê suas proporções. Enquanto isso não chega, você digita as medidas.</p><span class="tag">Em desenvolvimento</span></li>
-      <li><div class="n">2</div><h3>Veja o modelo</h3><p>Montamos um modelo proporcional ao seu corpo, para você enxergar a peça em você e não num manequim padrão.</p><span class="tag on">Demonstração 2D</span></li>
-      <li><div class="n">3</div><h3>Escolha a peça</h3><p>Corte, cor, tecido e medidas, com resposta imediata. Se um fornecedor publicou o catálogo, você parte de uma peça dele.</p><span class="tag on">Na demonstração</span></li>
-      <li><div class="n">4</div><h3>Gere o molde</h3><p>Planta técnica em PDF e moldes em DXF, com cotas, medidas e consumo estimado de tecido.</p><span class="tag on">Rascunho</span></li>
+      <li><div class="n">2</div><h3>Veja o modelo</h3><p>Montamos um modelo proporcional ao seu corpo, para você enxergar a peça em você e não num manequim padrão.</p><a class="tag on" href="#experimente">Demonstração 2D</a></li>
+      <li><div class="n">3</div><h3>Escolha a peça</h3><p>Corte, cor, tecido e medidas, com resposta imediata. Se um fornecedor publicou o catálogo, você parte de uma peça dele.</p><a class="tag on" href="#panel">Na demonstração</a></li>
+      <li><div class="n">4</div><h3>Gere o molde</h3><p>Planta técnica em PDF e moldes em DXF, com cotas, medidas e consumo estimado de tecido.</p><a class="tag on" href="#projeto">Rascunho</a></li>
       <li><div class="n">5</div><h3>Molde na mão da costureira</h3><p>O arquivo segue para a costureira ou a fábrica. Um modelista confere e ajusta o molde antes do primeiro corte.</p><span class="tag">Validação humana</span></li>
     </ol>
   </div>
@@ -433,6 +460,19 @@
         <div class="faq-more" id="faq-more" hidden></div>
         <div class="faq-pager"><button type="button" id="fp-prev" aria-label="Respostas anteriores">‹</button><span id="fp-n" aria-live="polite"></span><button type="button" id="fp-next" aria-label="Próximas respostas">›</button></div>
       </div>
+    </div>
+  </div>
+</section>
+
+<section id="em-obras" class="alt">
+  <div class="wrap">
+    <span class="eyebrow">Em obras</span>
+    <h2>Escaneamento do corpo, a caminho.</h2>
+    <p class="sub">Ainda não está pronto. É assim que pensamos em fazer.</p>
+    <img class="banner" src="imagens/mulher-verde.jpg" alt="Mulher de blazer verde-menta, de pé diante de um fundo claro e liso, como numa foto feita para o escaneamento" loading="lazy">
+    <div class="wip">
+      <article><h3>Como vai funcionar</h3><p>Você tira uma foto com a câmera do celular, com um objeto de tamanho conhecido ao lado, como um cartão ou uma folha A4. Esse objeto serve de escala: a detecção por imagens converte pixels em centímetros e estima peito, cintura e comprimentos.</p></article>
+      <article><h3>Por que achamos útil</h3><p>Medir o próprio corpo com fita é difícil, e cada pessoa faz de um jeito. Uma foto é rápida e repetível, e dá números mais consistentes para o modelista, com menos ajuste antes do corte.</p></article>
     </div>
   </div>
 </section>
